@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static java.util.Collections.emptyList;
-
 @Data
 public class Cell {
     private final AtomicReference<Double> resultRef = new AtomicReference<>(null);
@@ -19,12 +17,8 @@ public class Cell {
     private final Row row;
     private final List<IFunction> functions;
 
-    public Cell(Table table, Column column, Row row, Double result) {
-        this(table, column, row, emptyList(), result);
-    }
-
     public Cell(Table table, Column column, Row row, IFunction function) {
-        this(table, column, row, List.of(function), null);
+        this(table, column, row, List.of(function));
     }
 
     public Cell(Table table, Column column, Row row, List<IFunction> functions) {
@@ -42,7 +36,7 @@ public class Cell {
     public Double getResult() {
         if (!isExecuted()) {
             functions.stream()
-                    .map(func -> func.apply(table, column, row))
+                    .map(func -> func.execute(table, column, row))
                     .forEach(resultRef::set);
             executedRef.set(true);
         }

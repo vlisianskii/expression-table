@@ -6,12 +6,20 @@ import ton.Column;
 import ton.Row;
 import ton.Table;
 
+import java.util.stream.Stream;
+
 @AllArgsConstructor
-public class PowFunction implements ISelfFunction {
+public class PowFunction implements IFunction {
     private final int exponent;
 
     @Override
-    public Double apply(Table table, Column column, Row row, Cell cell) {
+    public Double apply(Table table, Column column, Row row) {
+        Cell cell = table.get(column, row);
         return Math.pow(cell.getResultRef().get(), exponent);
+    }
+
+    @Override
+    public Stream<Cell> dependencies(Table table, Column column, Row row) {
+        return Stream.empty();
     }
 }

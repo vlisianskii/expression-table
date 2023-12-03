@@ -16,10 +16,6 @@ public class Row {
         this(name, emptyList());
     }
 
-    public Row(String name, Row dependency) {
-        this(name, List.of(dependency));
-    }
-
     public Row(String name, List<Row> dependencies) {
         checkDependencies(name, dependencies);
         this.name = name;

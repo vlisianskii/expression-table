@@ -8,4 +8,8 @@ public class Table extends TreeTable<Column, Row, Cell> {
     public Table() {
         super(comparing(Column::getIndex), comparing(Row::getName));
     }
+
+    public void putCell(Cell cell) {
+        super.put(cell.getColumn(), cell.getRow(), cell);
+    }
 }
