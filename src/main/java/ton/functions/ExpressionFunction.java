@@ -6,47 +6,62 @@ import ton.Row;
 import ton.Table;
 import ton.expression.Expression;
 
-import java.util.List;
+import java.util.AbstractMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 
 public class ExpressionFunction implements IFunction {
+    private final Pattern ROW_PATTERN = Pattern.compile("(?<=_)(.*)");
+
     private final Expression expression;
+    private final Set<String> variables;
 
     public ExpressionFunction(String expression, Set<String> variables) {
         this.expression = new Expression(expression, variables);
+        this.variables = variables;
     }
 
     @Override
     public Double apply(Table table, Column column, Row row) {
-        Map<String, Double> variables = variables(table, column, row);
+        Map<String, Double> variables = variables(table, column);
         return expression.evaluate(variables);
     }
 
     @Override
     public Stream<Cell> dependencies(Table table, Column column, Row row) {
-        return row.getDependencies().stream()
+        return variables.stream()
                 .map(dependency -> getDependentCell(table, column, dependency));
     }
 
-    private Map<String, Double> variables(Table table, Column column, Row row) {
-        return dependencies(table, column, row)
-                .filter(Objects::nonNull)
-                .collect(toMap(v -> v.getRow().getName(), Cell::getResult));
+    private Map<String, Double> variables(Table table, Column column) {
+        return variables.stream()
+                .map(dependency -> new AbstractMap.SimpleEntry<>(dependency, getDependentCell(table, column, dependency)))
+                .filter(o -> o.getValue() != null)
+                .collect(toMap(AbstractMap.SimpleEntry::getKey, v -> v.getValue().getResult()));
     }
 
-    private Cell getDependentCell(Table table, Column column, Row dependency) {
-        return table.get(resolveColumn(column, dependency), dependency);
+    private Cell getDependentCell(Table table, Column column, String dependency) {
+        Column dependentColumn = resolveColumn(column, dependency);
+        Row dependentRow = resolveRow(dependency);
+        return table.get(dependentColumn, dependentRow);
     }
 
-    private Column resolveColumn(Column column, Row dependency) {
-        if (dependency.getName().startsWith("prev_")) column.prev();
-        if (dependency.getName().startsWith("next_")) column.next();
+    private Column resolveColumn(Column column, String dependency) {
+        if (dependency.startsWith("prev_")) return column.prev();
+        if (dependency.startsWith("next_")) return column.next();
         return column;
+    }
+
+    private Row resolveRow(String dependency) {
+        Matcher matcher = ROW_PATTERN.matcher(dependency);
+        if (matcher.find()) {
+            return new Row(matcher.group(0));
+        }
+        return new Row(dependency);
     }
 }

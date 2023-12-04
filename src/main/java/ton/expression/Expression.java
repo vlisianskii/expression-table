@@ -25,11 +25,13 @@ public class Expression {
 
     @SneakyThrows
     private void clearVariables() {
+        boolean accessible = variablesField.trySetAccessible();
         variablesField.set(e, newHashMap());
+        variablesField.setAccessible(accessible);
     }
 
     @SneakyThrows
     private Field getVariablesField(net.objecthunter.exp4j.Expression e) {
-        return e.getClass().getField("variables");
+        return e.getClass().getDeclaredField("variables");
     }
 }
