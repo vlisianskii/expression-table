@@ -8,60 +8,57 @@ import ton.expression.Expression;
 
 import java.util.AbstractMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
-public class ExpressionFunction implements IFunction {
-    private final Pattern ROW_PATTERN = Pattern.compile("(?<=_)(.*)");
+public class ExpressionFunction extends Function {
+    private static final String VARIABLES_REGEX = "[^a-zA-Z0-9_\\s]";
 
-    private final Expression expression;
     private final Set<String> variables;
+    private final Expression expression;
 
-    public ExpressionFunction(String expression, Set<String> variables) {
+    public ExpressionFunction(String expression) {
+        this.variables = variables(expression);
         this.expression = new Expression(expression, variables);
-        this.variables = variables;
     }
 
     @Override
     public Double apply(Table table, Column column, Row row) {
-        Map<String, Double> variables = variables(table, column);
-        return expression.evaluate(variables);
+        return expression.evaluate(variables(table, column, row));
     }
 
     @Override
     public Stream<Cell> dependencies(Table table, Column column, Row row) {
         return variables.stream()
-                .map(dependency -> getDependentCell(table, column, dependency));
+                .map(dependency -> getDependency(table, column, row, dependency))
+                .filter(Objects::nonNull)
+                .map(Map.Entry::getValue);
     }
 
-    private Map<String, Double> variables(Table table, Column column) {
+    private Map<String, Double> variables(Table table, Column column, Row row) {
         return variables.stream()
-                .map(dependency -> new AbstractMap.SimpleEntry<>(dependency, getDependentCell(table, column, dependency)))
-                .filter(o -> o.getValue() != null)
-                .collect(toMap(AbstractMap.SimpleEntry::getKey, v -> v.getValue().getResult()));
+                .map(dependency -> getDependency(table, column, row, dependency))
+                .filter(Objects::nonNull)
+                .collect(toMap(Map.Entry::getKey, e -> e.getValue().getResult()));
     }
 
-    private Cell getDependentCell(Table table, Column column, String dependency) {
-        Column dependentColumn = resolveColumn(column, dependency);
-        Row dependentRow = resolveRow(dependency);
-        return table.get(dependentColumn, dependentRow);
+    private Map.Entry<String, Cell> getDependency(Table table, Column column, Row row, String dependency) {
+        Variable variable = Variable.of(column, row, dependency);
+        Cell cell = table.get(variable.getColumn(), variable.getRow());
+        if (cell == null) return null;
+
+        return new AbstractMap.SimpleEntry<>(variable.getVariable(), cell);
     }
 
-    private Column resolveColumn(Column column, String dependency) {
-        if (dependency.startsWith("prev_")) return column.prev();
-        if (dependency.startsWith("next_")) return column.next();
-        return column;
-    }
-
-    private Row resolveRow(String dependency) {
-        Matcher matcher = ROW_PATTERN.matcher(dependency);
-        if (matcher.find()) {
-            return new Row(matcher.group(0));
-        }
-        return new Row(dependency);
+    private Set<String> variables(String expression) {
+        return stream(expression.split(VARIABLES_REGEX))
+                .map(String::trim)
+                .filter(o -> !o.isEmpty())
+                .collect(toSet());
     }
 }

@@ -20,19 +20,19 @@ public class TableTest {
         Column column_2024 = new Column(2024);
 
         Row row_a = new Row("A");
-        Row row_b = new Row("B");
-        Row row_c = new Row("C");
+        Row row_b = new Row("B", row_a);
+        Row row_c = new Row("C", row_b);
 
         Cell cell_2022_a = new Cell(table, column_2022, row_a, 1.1);
         Cell cell_2023_a = new Cell(table, column_2023, row_a, 2.2);
         Cell cell_2024_a = new Cell(table, column_2024, row_a, 3.3);
 
-        ExpressionFunction b_function = new ExpressionFunction("A + prev_A", Set.of("A", "prev_A"));
+        ExpressionFunction b_function = new ExpressionFunction("A + prev_A");
         Cell cell_2022_b = new Cell(table, column_2022, row_b, b_function);
         Cell cell_2023_b = new Cell(table, column_2023, row_b, b_function);
         Cell cell_2024_b = new Cell(table, column_2024, row_b, b_function);
 
-        ExpressionFunction c_function = new ExpressionFunction("B / next_B", Set.of("B", "next_B"));
+        ExpressionFunction c_function = new ExpressionFunction("B / next_B");
         PowFunction c_2023_function = new PowFunction(3);
         Cell cell_2023_c = new Cell(table, column_2023, row_c, List.of(c_function, c_2023_function));
 

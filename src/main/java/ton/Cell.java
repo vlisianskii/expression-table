@@ -4,9 +4,7 @@ import lombok.Data;
 import ton.functions.IFunction;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 
@@ -52,12 +50,6 @@ public class Cell {
     }
 
     public boolean isExecuted() {
-        return executed && allDependencies().allMatch(Cell::isExecuted);
-    }
-
-    private Stream<Cell> allDependencies() {
-        return functions.stream()
-                .flatMap(func -> func.dependencies(table, column, row))
-                .filter(Objects::nonNull);
+        return executed && functions.stream().allMatch(func -> func.isExecuted(table, column, row));
     }
 }
