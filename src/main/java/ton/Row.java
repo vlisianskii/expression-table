@@ -28,7 +28,7 @@ public class Row {
 
     private static void checkDependencies(String name, List<Row> dependencies) {
         if (dependencies.stream().anyMatch(dependency -> dependency.getName().equals(name))) {
-            throw new RuntimeException(format("Recurring dependencies <%s> for <%s> row", dependencies, name));
+            throw new IllegalArgumentException(format("Recurring dependencies <%s> for <%s> row", dependencies, name));
         }
     }
 }
