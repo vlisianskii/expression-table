@@ -33,7 +33,7 @@ public class TableTest {
         Cell cell_2024_b = new Cell(table, column_2024, row_b, b_function);
 
         ExpressionFunction c_function = new ExpressionFunction("B / next_B", Set.of("B", "next_B"));
-        PowFunction powFunction = new PowFunction(2);
+        PowFunction powFunction = new PowFunction(3);
         Cell cell_2023_c = new Cell(table, column_2023, row_c, List.of(c_function, powFunction));
 
         // act
@@ -47,13 +47,30 @@ public class TableTest {
 
         table.putCell(cell_2023_c);
 
-        // assert
+        // assert table
         assertThat(table.get(column_2022, row_c)).isNull();
-        assertThat(table.get(column_2023, row_c).getResult()).isEqualTo(0.3600000000000001);
+        assertThat(table.get(column_2023, row_c).getResult()).isEqualTo(0.2160000000000001);
         assertThat(table.get(column_2024, row_c)).isNull();
 
         assertThat(table.get(column_2022, row_b).getResult()).isNull();
         assertThat(table.get(column_2023, row_b).getResult()).isEqualTo(3.3000000000000003);
+        assertThat(table.get(column_2024, row_b).getResult()).isEqualTo(5.5);
+
+        assertThat(table.get(column_2022, row_a).getResult()).isEqualTo(1.1);
+        assertThat(table.get(column_2023, row_a).getResult()).isEqualTo(2.2);
+        assertThat(table.get(column_2024, row_a).getResult()).isEqualTo(3.3);
+
+        // update table
+        Cell replace_cell_2023_b = new Cell(table, column_2023, row_b, 3.5);
+        table.putCell(replace_cell_2023_b);
+
+        // assert updated table
+        assertThat(table.get(column_2022, row_c)).isNull();
+        assertThat(table.get(column_2023, row_c).getResult()).isEqualTo(0.25770097670924114);
+        assertThat(table.get(column_2024, row_c)).isNull();
+
+        assertThat(table.get(column_2022, row_b).getResult()).isNull();
+        assertThat(table.get(column_2023, row_b).getResult()).isEqualTo(3.5);
         assertThat(table.get(column_2024, row_b).getResult()).isEqualTo(5.5);
 
         assertThat(table.get(column_2022, row_a).getResult()).isEqualTo(1.1);

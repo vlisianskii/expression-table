@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 @Data
 public class Cell {
@@ -23,7 +22,7 @@ public class Cell {
     private boolean executed;
 
     public Cell(Table table, Column column, Row row, Double result) {
-        this(table, column, row, emptyList(), true, result);
+        this(table, column, row, emptyList(), result);
     }
 
     public Cell(Table table, Column column, Row row, IFunction function) {
@@ -31,15 +30,14 @@ public class Cell {
     }
 
     public Cell(Table table, Column column, Row row, List<IFunction> functions) {
-        this(table, column, row, functions, false, null);
+        this(table, column, row, functions, null);
     }
 
-    private Cell(Table table, Column column, Row row, List<IFunction> functions, boolean executed, Double result) {
+    private Cell(Table table, Column column, Row row, List<IFunction> functions, Double result) {
         this.table = table;
         this.column = column;
         this.row = row;
         this.functions = functions;
-        this.executed = executed;
         this.resultRef.set(result);
     }
 
@@ -55,10 +53,6 @@ public class Cell {
 
     public boolean isExecuted() {
         return executed && allDependencies().allMatch(Cell::isExecuted);
-    }
-
-    public List<Cell> dependencies() {
-        return allDependencies().collect(toList());
     }
 
     private Stream<Cell> allDependencies() {
