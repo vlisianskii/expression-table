@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableTest {
     @Test
-    public void test() {
+    public void test_expression_table() {
         // arrange
         Table table = new Table();
 
@@ -33,8 +33,11 @@ public class TableTest {
         Cell cell_2024_b = new Cell(table, column_2024, row_b, b_function);
 
         ExpressionFunction c_function = new ExpressionFunction("B / next_B", Set.of("B", "next_B"));
-        PowFunction powFunction = new PowFunction(3);
-        Cell cell_2023_c = new Cell(table, column_2023, row_c, List.of(c_function, powFunction));
+        PowFunction c_2023_function = new PowFunction(3);
+        Cell cell_2023_c = new Cell(table, column_2023, row_c, List.of(c_function, c_2023_function));
+
+        PowFunction c_2024_function = new PowFunction(2);
+        Cell cell_2024_c = new Cell(table, column_2024, row_c, List.of(c_2024_function), 3.0);
 
         // act
         table.putCell(cell_2022_a);
@@ -46,11 +49,12 @@ public class TableTest {
         table.putCell(cell_2024_b);
 
         table.putCell(cell_2023_c);
+        table.putCell(cell_2024_c);
 
         // assert table
         assertThat(table.get(column_2022, row_c)).isNull();
         assertThat(table.get(column_2023, row_c).getResult()).isEqualTo(0.2160000000000001);
-        assertThat(table.get(column_2024, row_c)).isNull();
+        assertThat(table.get(column_2024, row_c).getResult()).isEqualTo(9.0);
 
         assertThat(table.get(column_2022, row_b).getResult()).isNull();
         assertThat(table.get(column_2023, row_b).getResult()).isEqualTo(3.3000000000000003);
@@ -67,7 +71,7 @@ public class TableTest {
         // assert updated table
         assertThat(table.get(column_2022, row_c)).isNull();
         assertThat(table.get(column_2023, row_c).getResult()).isEqualTo(0.25770097670924114);
-        assertThat(table.get(column_2024, row_c)).isNull();
+        assertThat(table.get(column_2024, row_c).getResult()).isEqualTo(9.0);
 
         assertThat(table.get(column_2022, row_b).getResult()).isNull();
         assertThat(table.get(column_2023, row_b).getResult()).isEqualTo(3.5);

@@ -33,7 +33,7 @@ public class Cell {
         this(table, column, row, functions, null);
     }
 
-    private Cell(Table table, Column column, Row row, List<IFunction> functions, Double result) {
+    public Cell(Table table, Column column, Row row, List<IFunction> functions, Double result) {
         this.table = table;
         this.column = column;
         this.row = row;
