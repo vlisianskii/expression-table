@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -32,6 +33,18 @@ public class ExpressionFunction extends Function {
 
     private Map<String, Double> variables(Table table, Column column, Row row) {
         return dependencies.stream()
-                .collect(toMap(Dependency::getVariable, dep -> table.get(dep.getColumn(column), dep.getRow()).getResult()));
+                .collect(toMap(Dependency::getVariable, dependency -> getDependentCell(table, column, row, dependency)));
+    }
+
+    private Double getDependentCell(Table table, Column column, Row row, Dependency dependency) {
+        checkDependencies(row, dependency);
+        Column resolvedColumn = dependency.getColumn(column);
+        return table.get(resolvedColumn, dependency.getRow()).getResult(table, resolvedColumn, dependency.getRow());
+    }
+
+    private static void checkDependencies(Row row, Dependency dependency) {
+        if (dependency.getRow().getName().equals(row.getName())) {
+            throw new IllegalArgumentException(format("Recurring dependency <%s> for <%s> row", dependency, row));
+        }
     }
 }

@@ -13,6 +13,6 @@ public abstract class Function implements IFunction {
     
     @Override
     public boolean isExecuted(Table table, Column column, Row row) {
-        return dependencies(table, column, row).filter(Objects::nonNull).allMatch(Cell::isExecuted);
+        return dependencies(table, column, row).filter(Objects::nonNull).allMatch(o -> o.isExecuted(table, column, row));
     }
 }
