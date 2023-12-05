@@ -11,7 +11,7 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-public class ExpressionFunction extends Function {
+public class ExpressionFunction implements IFunction {
     private final List<Dependency> dependencies;
     private final Expression expression;
 

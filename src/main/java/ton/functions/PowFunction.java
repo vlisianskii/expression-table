@@ -9,7 +9,7 @@ import ton.Table;
 import java.util.stream.Stream;
 
 @AllArgsConstructor
-public class PowFunction extends Function {
+public class PowFunction implements IFunction {
     private final int exponent;
 
     @Override
