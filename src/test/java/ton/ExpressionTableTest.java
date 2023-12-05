@@ -8,11 +8,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TableTest {
+public class ExpressionTableTest {
     @Test
     public void test_expression_table() {
         // arrange
-        Table table = new Table();
+        ExpressionTable<Column, Row> table = new ExpressionTable<>();
 
         Column column_2022 = new Column(2022);
         Column column_2023 = new Column(2023);
@@ -22,10 +22,16 @@ public class TableTest {
         Row row_b = new Row("B");
         Row row_c = new Row("C");
 
-        ExpressionFunction b_function = new ExpressionFunction("A + prev_A", List.of(new Dependency("A", row_a), new Dependency("prev_A", row_a)));
-        ExpressionFunction c_function = new ExpressionFunction("B / next_B", List.of(new Dependency("B", row_b), new Dependency("next_B", row_b)));
-        PowFunction c_2023_function = new PowFunction(3);
-        PowFunction c_2024_function = new PowFunction(2);
+        ExpressionFunction<Column, Row> b_function = new ExpressionFunction<>(
+                "A + prev_A",
+                List.of(new Dependency<>("A", row_a), new Dependency<>("prev_A", row_a))
+        );
+        ExpressionFunction<Column, Row> c_function = new ExpressionFunction<>(
+                "B / next_B",
+                List.of(new Dependency<>("B", row_b), new Dependency<>("next_B", row_b))
+        );
+        PowFunction<Column, Row> c_2023_function = new PowFunction<>(3);
+        PowFunction<Column, Row> c_2024_function = new PowFunction<>(2);
 
         // act
         table.putCell(column_2022, row_a, 1.1);

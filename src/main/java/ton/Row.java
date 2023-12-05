@@ -3,10 +3,6 @@ package ton;
 import lombok.Data;
 
 @Data
-public class Row {
+public class Row implements IRow {
     private final String name;
-
-    public Row(String name) {
-        this.name = name;
-    }
 }

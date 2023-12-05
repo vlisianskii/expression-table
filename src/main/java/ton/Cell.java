@@ -8,16 +8,16 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Data
-public class Cell {
+public class Cell<C extends IColumn, R extends IRow> {
     private final AtomicReference<Double> resultRef = new AtomicReference<>(null);
     private final AtomicReference<Boolean> executedRef = new AtomicReference<>(false);
 
-    private final Table table;
-    private final Column column;
-    private final Row row;
-    private final List<IFunction> functions;
+    private final ExpressionTable<C, R> table;
+    private final C column;
+    private final R row;
+    private final List<IFunction<C, R>> functions;
 
-    public Cell(Table table, Column column, Row row, List<IFunction> functions, Double initialValue) {
+    public Cell(ExpressionTable<C, R> table, C column, R row, List<IFunction<C, R>> functions, Double initialValue) {
         this.table = table;
         this.column = column;
         this.row = row;
@@ -39,7 +39,7 @@ public class Cell {
         return executedRef.get() && functions.stream().allMatch(this::allDependenciesExecuted);
     }
 
-    private boolean allDependenciesExecuted(IFunction function) {
+    private boolean allDependenciesExecuted(IFunction<C, R> function) {
         return function.dependencies(table, column, row)
                 .filter(Objects::nonNull)
                 .allMatch(Cell::isExecuted);
