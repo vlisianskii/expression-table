@@ -2,6 +2,7 @@ package ton.table;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import static java.util.Collections.emptyMap;
@@ -23,6 +24,11 @@ public class TreeTable<C, R, V> implements ITable<C, R, V> {
     @Override
     public V get(C c, R r) {
         return getRows(c).get(r);
+    }
+
+    @Override
+    public Set<C> getColumns() {
+        return content.keySet();
     }
 
     @Override
