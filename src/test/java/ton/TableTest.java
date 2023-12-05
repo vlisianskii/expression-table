@@ -32,40 +32,38 @@ public class TableTest {
         table.putCell(column_2023, row_a, 2.2);
         table.putCell(column_2024, row_a, 3.3);
 
-        table.putCell(column_2022, row_b, b_function);
-        table.putCell(column_2023, row_b, b_function);
-        table.putCell(column_2024, row_b, b_function);
+        table.putRow(row_b, List.of(b_function));
 
         table.putCell(column_2023, row_c, List.of(c_function, c_2023_function));
         table.putCell(column_2024, row_c, List.of(c_2024_function), 3.0);
 
         // assert table
         assertThat(table.get(column_2022, row_c)).isNull();
-        assertThat(table.getCell(column_2023, row_c)).isEqualTo(0.2160000000000001);
-        assertThat(table.getCell(column_2024, row_c)).isEqualTo(9.0);
+        assertThat(table.get(column_2023, row_c).getResult()).isEqualTo(0.2160000000000001);
+        assertThat(table.get(column_2024, row_c).getResult()).isEqualTo(9.0);
 
-        assertThat(table.getCell(column_2022, row_b)).isNull();
-        assertThat(table.getCell(column_2023, row_b)).isEqualTo(3.3000000000000003);
-        assertThat(table.getCell(column_2024, row_b)).isEqualTo(5.5);
+        assertThat(table.get(column_2022, row_b).getResult()).isNull();
+        assertThat(table.get(column_2023, row_b).getResult()).isEqualTo(3.3000000000000003);
+        assertThat(table.get(column_2024, row_b).getResult()).isEqualTo(5.5);
 
-        assertThat(table.getCell(column_2022, row_a)).isEqualTo(1.1);
-        assertThat(table.getCell(column_2023, row_a)).isEqualTo(2.2);
-        assertThat(table.getCell(column_2024, row_a)).isEqualTo(3.3);
+        assertThat(table.get(column_2022, row_a).getResult()).isEqualTo(1.1);
+        assertThat(table.get(column_2023, row_a).getResult()).isEqualTo(2.2);
+        assertThat(table.get(column_2024, row_a).getResult()).isEqualTo(3.3);
 
         // update table
         table.putCell(column_2023, row_b, 3.5);
 
         // assert updated table
         assertThat(table.get(column_2022, row_c)).isNull();
-        assertThat(table.getCell(column_2023, row_c)).isEqualTo(0.25770097670924114);
-        assertThat(table.getCell(column_2024, row_c)).isEqualTo(9.0);
+        assertThat(table.get(column_2023, row_c).getResult()).isEqualTo(0.25770097670924114);
+        assertThat(table.get(column_2024, row_c).getResult()).isEqualTo(9.0);
 
-        assertThat(table.getCell(column_2022, row_b)).isNull();
-        assertThat(table.getCell(column_2023, row_b)).isEqualTo(3.5);
-        assertThat(table.getCell(column_2024, row_b)).isEqualTo(5.5);
+        assertThat(table.get(column_2022, row_b).getResult()).isNull();
+        assertThat(table.get(column_2023, row_b).getResult()).isEqualTo(3.5);
+        assertThat(table.get(column_2024, row_b).getResult()).isEqualTo(5.5);
 
-        assertThat(table.getCell(column_2022, row_a)).isEqualTo(1.1);
-        assertThat(table.getCell(column_2023, row_a)).isEqualTo(2.2);
-        assertThat(table.getCell(column_2024, row_a)).isEqualTo(3.3);
+        assertThat(table.get(column_2022, row_a).getResult()).isEqualTo(1.1);
+        assertThat(table.get(column_2023, row_a).getResult()).isEqualTo(2.2);
+        assertThat(table.get(column_2024, row_a).getResult()).isEqualTo(3.3);
     }
 }

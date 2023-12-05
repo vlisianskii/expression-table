@@ -13,13 +13,13 @@ public class PowFunction implements IFunction {
     private final int exponent;
 
     @Override
-    public Double apply(Table table, Column column, Row row) {
-        Cell cell = table.get(column, row);
-        return Math.pow(cell.getResultRef().get(), exponent);
+    public Stream<Cell> dependencies(Table table, Column column, Row row) {
+        return Stream.empty();
     }
 
     @Override
-    public Stream<Cell> dependencies(Table table, Column column, Row row) {
-        return Stream.empty();
+    public Double apply(Table table, Column column, Row row) {
+        Cell cell = table.get(column, row);
+        return Math.pow(cell.getResultRef().get(), exponent);
     }
 }

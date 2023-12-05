@@ -13,16 +13,12 @@ public class Table extends TreeTable<Column, Row, Cell> {
         super(comparing(Column::getIndex), comparing(Row::getName));
     }
 
-    public void putRow(Row row) {
-        getColumns().forEach(column -> putCell(column, row, newArrayList(), null));
+    public void putRow(Row row, List<IFunction> functions) {
+        getColumns().forEach(column -> putCell(column, row, functions));
     }
 
     public void putCell(Column column, Row row, Double value) {
         putCell(column, row, newArrayList(), value);
-    }
-
-    public void putCell(Column column, Row row, IFunction function) {
-        putCell(column, row, newArrayList(function));
     }
 
     public void putCell(Column column, Row row, List<IFunction> functions) {
@@ -30,14 +26,6 @@ public class Table extends TreeTable<Column, Row, Cell> {
     }
 
     public void putCell(Column column, Row row, List<IFunction> functions, Double value) {
-        super.put(column, row, new Cell(functions, value));
-    }
-
-    public Double getCell(Column column, Row row) {
-        Cell cell = super.get(column, row);
-        if (cell == null) {
-            return null;
-        }
-        return cell.getResult(this, column, row);
+        super.put(column, row, new Cell(this, column, row, functions, value));
     }
 }

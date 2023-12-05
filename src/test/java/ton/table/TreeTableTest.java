@@ -27,6 +27,7 @@ public class TreeTableTest {
         table.put(2023, "Sales", 100.01);
         // assert
         assertThat(table.get(2023, "Sales")).isEqualTo(100.01);
+        assertThat(table.getColumns()).containsExactly(2023);
         assertThat(table.getRows(2023)).isEqualTo(Map.of("Sales", 100.01));
         assertThat(table.contains(2023, "Sales")).isTrue();
         assertThat(table.isEmpty()).isFalse();
@@ -36,6 +37,7 @@ public class TreeTableTest {
         table.put(2023, "Sales", 200.01);
         // assert replace value
         assertThat(table.get(2023, "Sales")).isEqualTo(200.01);
+        assertThat(table.getColumns()).containsExactly(2023);
         assertThat(table.getRows(2023)).isEqualTo(Map.of("Sales", 200.01));
         assertThat(table.contains(2023, "Sales")).isTrue();
         assertThat(table.isEmpty()).isFalse();

@@ -21,14 +21,14 @@ public class ExpressionFunction implements IFunction {
     }
 
     @Override
-    public Double apply(Table table, Column column, Row row) {
-        return expression.evaluate(variables(table, column, row));
-    }
-
-    @Override
     public Stream<Cell> dependencies(Table table, Column column, Row row) {
         return dependencies.stream()
                 .map(dependency -> table.get(dependency.getColumn(column), dependency.getRow()));
+    }
+
+    @Override
+    public Double apply(Table table, Column column, Row row) {
+        return expression.evaluate(variables(table, column, row));
     }
 
     private Map<String, Double> variables(Table table, Column column, Row row) {
@@ -39,7 +39,7 @@ public class ExpressionFunction implements IFunction {
     private Double getDependentCell(Table table, Column column, Row row, Dependency dependency) {
         checkDependencies(row, dependency);
         Column resolvedColumn = dependency.getColumn(column);
-        return table.get(resolvedColumn, dependency.getRow()).getResult(table, resolvedColumn, dependency.getRow());
+        return table.get(resolvedColumn, dependency.getRow()).getResult();
     }
 
     private static void checkDependencies(Row row, Dependency dependency) {
