@@ -21,6 +21,10 @@ public class Table extends TreeTable<Column, Row, Cell> {
         putCell(column, row, newArrayList(), value);
     }
 
+    public void putCell(Column column, Row row, IFunction function) {
+        putCell(column, row, newArrayList(function));
+    }
+
     public void putCell(Column column, Row row, List<IFunction> functions) {
         putCell(column, row, functions, null);
     }
