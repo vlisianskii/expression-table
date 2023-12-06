@@ -13,10 +13,6 @@ public class ExpressionTable<C extends IColumn, R extends IRow> extends TreeTabl
         super(comparing(IColumn::getName), comparing(IRow::getName));
     }
 
-    public void putRow(R row, List<IFunction<C, R>> functions) {
-        getColumns().forEach(column -> putCell(column, row, functions));
-    }
-
     public void putCell(C column, R row, Double value) {
         putCell(column, row, newArrayList(), value);
     }
@@ -28,4 +24,24 @@ public class ExpressionTable<C extends IColumn, R extends IRow> extends TreeTabl
     public void putCell(C column, R row, List<IFunction<C, R>> functions, Double value) {
         super.put(column, row, new Cell<>(this, column, row, functions, value));
     }
+
+    public void addFunctionsInRow(R row, List<IFunction<C, R>> functions) {
+        getColumns().forEach(column -> addCellFunctions(column, row, functions, true));
+    }
+
+    public void addFunctionsInColumn(C column, List<IFunction<C, R>> functions) {
+        getRows().forEach(row -> addCellFunctions(column, row, functions, false));
+    }
+
+    private void addCellFunctions(C column, R row, List<IFunction<C, R>> functions, boolean createNewCellIfNeeded) {
+        Cell<C, R> cell = super.get(column, row);
+        if (cell != null) {
+            cell.getFunctions().addAll(functions);
+            return;
+        }
+        if (createNewCellIfNeeded) {
+            putCell(column, row, functions);
+        }
+    }
+
 }

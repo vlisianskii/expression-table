@@ -38,7 +38,7 @@ public class ExpressionTableTest {
         table.putCell(column_2023, row_a, 2.2);
         table.putCell(column_2024, row_a, 3.3);
 
-        table.putRow(row_b, List.of(b_function));
+        table.addFunctionsInRow(row_b, List.of(b_function));
 
         table.putCell(column_2023, row_c, List.of(c_function, c_2023_function));
         table.putCell(column_2024, row_c, List.of(c_2024_function), 3.0);
@@ -71,5 +71,24 @@ public class ExpressionTableTest {
         assertThat(table.get(column_2022, row_a).getResult()).isEqualTo(1.1);
         assertThat(table.get(column_2023, row_a).getResult()).isEqualTo(2.2);
         assertThat(table.get(column_2024, row_a).getResult()).isEqualTo(3.3);
+    }
+
+    @Test
+    public void test_column_functions() {
+        // arrange
+        ExpressionTable<Column, Row> table = new ExpressionTable<>();
+        Column column_2023 = new Column(2023);
+        Row row_a = new Row("A");
+        Row row_b = new Row("B");
+        table.putCell(column_2023, row_a, 1.1);
+        table.putCell(column_2023, row_b, 2.2);
+
+        // act
+        PowFunction<Column, Row> pow_function = new PowFunction<>(3);
+        table.addFunctionsInColumn(column_2023, List.of(pow_function));
+
+        // assert table
+        assertThat(table.get(column_2023, row_a).getResult()).isEqualTo(1.3310000000000004);
+        assertThat(table.get(column_2023, row_b).getResult()).isEqualTo(10.648000000000003);
     }
 }

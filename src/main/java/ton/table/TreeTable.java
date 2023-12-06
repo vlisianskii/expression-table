@@ -1,11 +1,9 @@
 package ton.table;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toSet;
 
 public class TreeTable<C, R, V> implements ITable<C, R, V> {
     private final Map<C, Map<R, V>> content;
@@ -29,6 +27,14 @@ public class TreeTable<C, R, V> implements ITable<C, R, V> {
     @Override
     public Set<C> getColumns() {
         return content.keySet();
+    }
+
+    @Override
+    public Set<R> getRows() {
+        return content.values().stream()
+                .map(Map::keySet)
+                .flatMap(Collection::stream)
+                .collect(toSet());
     }
 
     @Override
