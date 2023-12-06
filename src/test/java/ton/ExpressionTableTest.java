@@ -38,7 +38,7 @@ public class ExpressionTableTest {
         table.putCell(column_2023, row_a, 2.2);
         table.putCell(column_2024, row_a, 3.3);
 
-        table.addFunctionsInRow(row_b, List.of(b_function));
+        table.addFunctionsInRow(row_b, List.of(b_function), true);
 
         table.putCell(column_2023, row_c, List.of(c_function, c_2023_function));
         table.putCell(column_2024, row_c, List.of(c_2024_function), 3.0);
@@ -85,7 +85,7 @@ public class ExpressionTableTest {
 
         // act
         PowFunction<Column, Row> pow_function = new PowFunction<>(3);
-        table.addFunctionsInColumn(column_2023, List.of(pow_function));
+        table.addFunctionsInColumn(column_2023, List.of(pow_function), false);
 
         // assert table
         assertThat(table.get(column_2023, row_a).getResult()).isEqualTo(1.3310000000000004);

@@ -25,12 +25,12 @@ public class ExpressionTable<C extends IColumn, R extends IRow> extends TreeTabl
         super.put(column, row, new Cell<>(this, column, row, functions, value));
     }
 
-    public void addFunctionsInRow(R row, List<IFunction<C, R>> functions) {
-        getColumns().forEach(column -> addCellFunctions(column, row, functions, true));
+    public void addFunctionsInRow(R row, List<IFunction<C, R>> functions, boolean createNewCellIfNeeded) {
+        getColumns().forEach(column -> addCellFunctions(column, row, functions, createNewCellIfNeeded));
     }
 
-    public void addFunctionsInColumn(C column, List<IFunction<C, R>> functions) {
-        getRows().forEach(row -> addCellFunctions(column, row, functions, false));
+    public void addFunctionsInColumn(C column, List<IFunction<C, R>> functions, boolean createNewCellIfNeeded) {
+        getRows().forEach(row -> addCellFunctions(column, row, functions, createNewCellIfNeeded));
     }
 
     private void addCellFunctions(C column, R row, List<IFunction<C, R>> functions, boolean createNewCellIfNeeded) {
